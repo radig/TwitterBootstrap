@@ -6,12 +6,76 @@ class BootstrapFormHelper extends FormHelper {
 
 	public $helpers = array('Html');
 
+	public $gridOptions = array('colsGrid' => array('3', '3', '3', '3'), 'rowType' => 'row', 'first' => true);
+	public $defaultGridOptions = array('colsGrid' => array('3', '3', '3', '3'), 'rowType' => 'row', 'first' => true);
+
 	public function create($model = null, $options = array()) {
 		$default = array(
 			'class' => 'form-horizontal',
 		);
 		$options = Set::merge($default, $options);
 		return parent::create($model, $options);
+	}
+	
+	public function newLine($colsGrid = array('3', '3', '3', '3'), $container = 'container'){
+		$this->gridOptions = $this->defaultGridOptions;
+		
+		$this->gridOptions['colsGrid'] = $colsGrid;
+		
+		if(strpos($container, 'fluid') !== false) {
+			$this->gridOptions['rowType'] = 'row-fluid';
+		}
+	}
+	
+	public function input($name, $options = array()) {
+		$default = array(
+			'type' => null,
+			'error' => null,
+			'div' => array(),
+		);
+		$options = Set::merge($default, $options);
+		
+		// if Error Message
+		if ($options['error'] !== false) {
+			$options['error'] = array(
+				'attributes' => array(
+					'wrap' => 'span',
+					'class' => 'help-inline error-message',
+				),
+			);
+		}
+		
+		// Get current grid size
+		$gridSize = array_shift($this->gridOptions['colsGrid']);
+		
+		// Input Class Size
+		$options['class'] = ' span'.$gridSize;
+		
+		// Parent Input
+		$input[] = parent::input($name, $options);
+		
+		// Div classes
+		$clearfix = 'control-group';
+		if (parent::error($name)) {
+			$clearfix .= ' error';
+		}
+		$clearfix .= ' span'.$gridSize;
+		
+		// create div
+		$input = $this->Html->div($clearfix, implode("\n", $input));
+		
+		// open/end row/row-fluid div
+		if($this->gridOptions['first'] == true) {
+			$input = '<div class="'.$this->gridOptions['rowType'].'">'.$input;
+			$this->gridOptions['first'] = false;
+		}
+		
+		if(current($this->gridOptions['colsGrid']) === false) {
+			$input = $input.'</div>';
+			$this->gridOptions = $this->defaultGridOptions;
+		}
+		
+		return $input;
 	}
 
 	public function input($name, $options = array()) {
