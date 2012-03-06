@@ -78,7 +78,7 @@ class BootstrapFormHelper extends FormHelper {
 		return $input;
 	}
 
-	public function input($name, $options = array()) {
+	public function inputBootStrap($name, $options = array()) {
 		$default = array(
 			'type' => null,
 			'label' => null,
