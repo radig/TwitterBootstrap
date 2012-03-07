@@ -6,24 +6,24 @@ class BootstrapFormHelper extends FormHelper {
 
 	public $helpers = array('Html');
 
-	public $gridOptions = array('colsGrid' => array('3', '3', '3', '3'), 'rowType' => 'row', 'first' => true);
-	public $defaultGridOptions = array('colsGrid' => array('3', '3', '3', '3'), 'rowType' => 'row', 'first' => true);
+	public $gridOptions = array('colsGrid' => array('3', '3', '3', '3'), 'rowType' => 'row-fluid', 'first' => true);
+	public $defaultGridOptions = array('colsGrid' => array('3', '3', '3', '3'), 'rowType' => 'row-fluid', 'first' => true);
 
 	public function create($model = null, $options = array()) {
 		$default = array(
-			'class' => 'form-horizontal',
+			'class' => '',
 		);
 		$options = Set::merge($default, $options);
 		return parent::create($model, $options);
 	}
 	
-	public function newLine($colsGrid = array('3', '3', '3', '3'), $container = 'container'){
+	public function newLine($colsGrid = array('3', '3', '3', '3'), $fluid = true){
 		$this->gridOptions = $this->defaultGridOptions;
 		
 		$this->gridOptions['colsGrid'] = $colsGrid;
 		
-		if(strpos($container, 'fluid') !== false) {
-			$this->gridOptions['rowType'] = 'row-fluid';
+		if(!$fluid) {
+			$this->gridOptions['rowType'] = 'row';
 		}
 	}
 	
@@ -48,33 +48,36 @@ class BootstrapFormHelper extends FormHelper {
 		// Get current grid size
 		$gridSize = array_shift($this->gridOptions['colsGrid']);
 		
-		// Input Class Size
-		$options['class'] = ' span'.$gridSize;
-		
 		// Parent Input
 		$input[] = parent::input($name, $options);
-		
+
 		// Div classes
-		$clearfix = 'control-group';
-		if (parent::error($name)) {
-			$clearfix .= ' error';
+		if(strpos($input[0], "hidden") === FALSE) 
+		{
+			$clearfix = 'control-group';
+			if (parent::error($name)) {
+				$clearfix .= ' error';
+			}
+			$clearfix .= ' span'.$gridSize;
+
+			// create div
+			$input = $this->Html->div($clearfix, implode("\n", $input));
+
+			// open/end row/row-fluid div
+			if($this->gridOptions['first'] == true) {
+				$input = '<div class="'.$this->gridOptions['rowType'].'">'.$input;
+				$this->gridOptions['first'] = false;
+			}
+			
+			if(current($this->gridOptions['colsGrid']) === false) {
+				$input = $input.'</div>';
+				$this->gridOptions = $this->defaultGridOptions;
+			}
 		}
-		$clearfix .= ' span'.$gridSize;
-		
-		// create div
-		$input = $this->Html->div($clearfix, implode("\n", $input));
-		
-		// open/end row/row-fluid div
-		if($this->gridOptions['first'] == true) {
-			$input = '<div class="'.$this->gridOptions['rowType'].'">'.$input;
-			$this->gridOptions['first'] = false;
+		else
+		{
+			$input = $input[0];
 		}
-		
-		if(current($this->gridOptions['colsGrid']) === false) {
-			$input = $input.'</div>';
-			$this->gridOptions = $this->defaultGridOptions;
-		}
-		
 		return $input;
 	}
 
