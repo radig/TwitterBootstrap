@@ -59,4 +59,18 @@ class BootstrapHtmlHelper extends HtmlHelper {
 		return parent::tag('ul', implode("\n", $li), $options);
 	}
 
+	public function glyphLink($title, $url = null, $options = array(), $confirmMessage = false)
+	{
+		$icon = '';
+		if($options['glyph'] !== false)
+		{
+			$icon = "<i class='".$options['glyph']."'></i>";
+			$options['escape'] = false;
+		}
+
+		$link = parent::link($icon.$title, $url, $options, $confirmMessage);
+
+		return $link;
+	}
+
 }
