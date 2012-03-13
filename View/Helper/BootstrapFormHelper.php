@@ -34,7 +34,7 @@ class BootstrapFormHelper extends FormHelper {
 			'div' => array(),
 		);
 		$options = Set::merge($default, $options);
-		
+
 		// if Error Message
 		if ($options['error'] !== false) {
 			$options['error'] = array(
@@ -58,6 +58,14 @@ class BootstrapFormHelper extends FormHelper {
 			if (parent::error($name)) {
 				$clearfix .= ' error';
 			}
+
+			$modelKey = $this->model();
+			$fieldKey = $this->field();
+
+			if ($this->_introspectModel($modelKey, 'validates', $fieldKey)) {
+				$clearfix .= ' required';
+			}
+
 			$clearfix .= ' span'.$gridSize;
 
 			// create div
