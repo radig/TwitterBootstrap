@@ -16,18 +16,22 @@ class BootstrapFormHelper extends FormHelper {
 		$options = Set::merge($default, $options);
 		return parent::create($model, $options);
 	}
-	
+
 	public function newLine($colsGrid = array('3', '3', '3', '3'), $fluid = true){
 		$this->gridOptions = $this->defaultGridOptions;
-		
+
 		$this->gridOptions['colsGrid'] = $colsGrid;
-		
+
 		if(!$fluid) {
 			$this->gridOptions['rowType'] = 'row';
 		}
 	}
-	
+
 	public function input($name, $options = array()) {
+		$this->setEntity($name);
+		$modelKey = $this->model();
+		$fieldKey = $this->field();
+
 		$default = array(
 			'type' => null,
 			'error' => null,
@@ -44,23 +48,25 @@ class BootstrapFormHelper extends FormHelper {
 				),
 			);
 		}
-		
+
 		// Get current grid size
 		$gridSize = array_shift($this->gridOptions['colsGrid']);
-		
+
+		// Protect of bogus html5 inputs type number with comma decimals
+		$meta = $this->_introspectModel($modelKey, 'fields', $fieldKey);
+		if(in_array($meta['type'], array('decimal', 'float')))
+			$options['type'] = 'text';
+
 		// Parent Input
 		$input[] = parent::input($name, $options);
 
 		// Div classes
-		if(strpos($input[0], "hidden") === FALSE) 
+		if(strpos($input[0], "hidden") === false)
 		{
 			$clearfix = 'control-group';
 			if (parent::error($name)) {
 				$clearfix .= ' error';
 			}
-
-			$modelKey = $this->model();
-			$fieldKey = $this->field();
 
 			if ($this->_introspectModel($modelKey, 'validates', $fieldKey)) {
 				$clearfix .= ' required';
@@ -76,7 +82,7 @@ class BootstrapFormHelper extends FormHelper {
 				$input = '<div class="'.$this->gridOptions['rowType'].'">'.$input;
 				$this->gridOptions['first'] = false;
 			}
-			
+
 			if(current($this->gridOptions['colsGrid']) === false) {
 				$input = $input.'</div>';
 				$this->gridOptions = $this->defaultGridOptions;
@@ -111,7 +117,7 @@ class BootstrapFormHelper extends FormHelper {
 		if ($options['type'] === 'checkbox') {
 			if (!isset($options['opt-label'])) {
 				$options['opt-label'] = $options['label'];
-				$options['label'] = FALSE;
+				$options['label'] = false;
 			}
 			if (isset($options['group-label'])) {
 				$options['label'] = $options['group-label'];
@@ -206,7 +212,7 @@ class BootstrapFormHelper extends FormHelper {
 		}
 
 		if ($options['type'] === 'checkbox') {
-			$options['label'] = empty($options['opt-label']) ? FALSE : $options['opt-label'];
+			$options['label'] = empty($options['opt-label']) ? false : $options['opt-label'];
 			$input = $this->_checkbox($name, $options);
 		} else {
 			$input = parent::input($name, $options);
@@ -237,7 +243,7 @@ class BootstrapFormHelper extends FormHelper {
 				unset($options['label']['text']);
 				$options['label']['for'] = '';
 			}
-			$out[] = parent::label(FALSE, $text, $options['label']);
+			$out[] = parent::label(false, $text, $options['label']);
 		}
 		if ($options['div'] === false) {
 			$out[] = $input;
