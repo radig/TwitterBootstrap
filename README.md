@@ -1,63 +1,140 @@
-TwitterBootstrap Plugin for CakePHP2
-====================================
-
-About Bootstrap, from Twitter
+#TwitterBootstrap Plugin for CakePHP2.x
+The TwitterBootstrap Plugin provides an easy-to-use feature Bootstrap in CakePHP2.x
 
 [Bootstrap, from Twitter](http://twitter.github.com/bootstrap/)
 
-[twitter/bootstrap - GitHub](https://github.com/twitter/bootstrap)
+This v1.3.4 supports Bootstrap v2.0.3
 
-How to install
---------------
+##Installation
+###This plugin
+Manual
 
-Download files from [Bootstrap, from Twitter](http://twitter.github.com/bootstrap/)
-Move files to app/Plugin/TwitterBootstrap/webroot/
+- Download this plugin: [Downloads · slywalker/TwitterBootstrap](https://github.com/slywalker/TwitterBootstrap/downloads)
+- Unzip that download.
+- Copy the resulting folder to `app/Plugin`
+- Rename the folder you just copied to `TwitterBootstrap`
 
-Controller/AppController.php
+Submodule
+
+	$ cd /your_app_path
+	$ git submodule add git://github.com/slywalker/TwitterBootstrap.git Plugin/TwitterBootstrap
+	$ git submodule update --init --recursive
+
+Clone
+
+	$ cd /your_app_path/Plugin
+	$ git clone git://github.com/slywalker/TwitterBootstrap.git
+	$ cd TwitterBootstrap
+	$ git submodule update --init
+
+###Enable plugin
+You need to enable the plugin your app/Config/bootstrap.php file:
+
+	CakePlugin::load('TwitterBootstrap');
+
+If you are already using `CakePlugin::loadAll();`, then this is not necessary.
+
+###bootstrap
+Manual
+
+- Download bootstrap: [Bootstrap, from Twitter](http://twitter.github.com/bootstrap/)
+- Unzip that download.
+- Copy folders(css, img, js) in the resulting folder to `app/webroot`
+
+Shell Command (need `recess` and `uglifyjs`)
+
+(Copy less, js, img files to webroot and make css, js files)
+
+	$ cd /your_app
+	$ Console/cake TwitterBootstrap.copy
+	$ Console/cake TwitterBootstrap.make
+
+##Usage
+Controller/AppController.php:
 
 	<?php
 	class AppController extends Controller {
 
-		// Usig as plugin's helper
-		public $helpers = array(
-			'Session', 'Html', 'Form',
-			'TwitterBootstrap.BootstrapHtml',
-			'TwitterBootstrap.BootstrapForm',
-			'TwitterBootstrap.BootstrapPaginator',
-		);
-
-		// Using as alias of core helper
 		public $helpers = array(
 			'Session',
 			'Html' => array('className' => 'TwitterBootstrap.BootstrapHtml'),
 			'Form' => array('className' => 'TwitterBootstrap.BootstrapForm'),
 			'Paginator' => array('className' => 'TwitterBootstrap.BootstrapPaginator'),
 		);
+
 	}
 
-Copy app/Plugin/TwitterBootstrap/View/Layouts/bootstrap.ctp to app/View/Layouts/bootstrap.ctp
+View/Layout/default.ctp:
 
-Usage (Using as alias of core helper)
--------------------------------------
-
-Load CSS
-
-	<?php echo $this->Html->css(); ?> load bootstrap.min.css
-
-Load JS
-
-	<?php echo $this->Html->script(); ?> load bootstrap.min.js
+	<?php echo $this->Html->css('bootstrap.min'); ?>
+	<?php echo $this->Html->css('bootstrap-responsive.min'); ?>
+	<?php echo $this->Html->script('bootstrap.min'); ?>
 
 Output form input as Bootstrap format
 
-	<?php echo $this->Form->cretate('User'); ?>
-		<?php echo $this->Form->input('name'); ?>
-		<?php echo $this->Form->inlineInputs('name', array(
-			'first_name' => array('class' => 'small'),
-			'&nbsp;',
-			'last_name' => array('class' => 'small'),
-		)); ?>
-		<?php echo $this->Form->submit('Submit'); ?>
+	<?php echo $this->Form->create('Sample', array('class' => 'form-horizontal')); ?>
+		<fieldset>
+			<legend>Extending form controls</legend>
+			<?php echo $this->Form->input('field1', array(
+				'label' => 'Prepended text',
+				'type' => 'text',
+				'class' => 'span2',
+				'prepend' => '@',
+				'helpBlock' => 'Here\'s some help text',
+			)); ?>
+			<?php echo $this->Form->input('field2', array(
+				'label' => 'Appended text',
+				'type' => 'text',
+				'class' => 'span2',
+				'append' => '.00',
+				'helpInline' => 'Here\'s more help text',
+			)); ?>
+			<?php echo $this->Form->input('field3', array(
+				'label' => 'Append and prepend',
+				'type' => 'text',
+				'class' => 'span2',
+				'prepend' => '$',
+				'append' => '.00',
+			)); ?>
+			<?php echo $this->Form->input('field4', array(
+				'label' => 'Append with button',
+				'type' => 'text',
+				'class' => 'span2',
+				'append' => array('Go!', array('wrap' => 'button', 'class' => 'btn')),
+			)); ?>
+			<?php echo $this->Form->input('field5', array(
+				'label' => 'Inline checkboxes',
+				'type' => 'select',
+				'multiple' => 'checkbox inline',
+				'options' => array('1', '2', '3'),
+			)); ?>
+			<?php echo $this->Form->input('field6', array(
+				'label' => 'Checkboxes',
+				'type' => 'select',
+				'multiple' => 'checkbox',
+				'options' => array(
+					'1' => 'Option one is this and that—be sure to include why it\'s great',
+					'2' => 'Option two can also be checked and included in form results',
+					'3' => 'Option three can—yes, you guessed it—also be checked and included in form results',
+				),
+				'helpBlock' => '<strong>Note:</strong> Labels surround all the options for much larger click areas and a more usable form.',
+			)); ?>
+			<?php echo $this->Form->input('field7', array(
+				'label' => 'Radio buttons',
+				'type' => 'radio',
+				'options' => array(
+					'1' => 'Option one is this and that—be sure to include why it\'s great',
+					'2' => 'Option two can is something else and selecting it will deselect option one',
+				),
+			)); ?>
+			<div class="form-actions">
+				<?php echo $this->Form->submit('Save changes', array(
+					'div' => false,
+					'class' => 'btn btn-primary',
+				)); ?>
+				<button class="btn">Cancel</button>
+			</div>
+		</fieldset>
 	<?php echo $this->Form->end(); ?>
 
 Output SessionHelper::flash as Bootstrap format
@@ -96,9 +173,9 @@ Breadcrumb
 		'three',
 	)); ?>
 
+You can see more sample. access http://{webroot}/twitter_bootstrap
 
-License
--------
+##License
 
 The MIT License (MIT)
 
