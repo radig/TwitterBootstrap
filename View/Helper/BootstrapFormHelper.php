@@ -235,6 +235,7 @@ class BootstrapFormHelper extends FormHelper {
 
 		$type = $this->_extractOption('type', $options);
 		$options = $this->_getType($fieldName, $options);
+		$isRequired = $this->_introspectModel($this->model(), 'validates', $this->field());
 
 		$hidden = null;
 		if ('hidden' === $type) {
@@ -266,6 +267,13 @@ class BootstrapFormHelper extends FormHelper {
 
 		$div = $this->_extractOption('div', $options);
 		$options['div'] = false;
+
+		if($isRequired) {
+			if(!isset($div['class']))
+				$div['class'] = '';
+
+			$div['class'] .= ' required';
+		}
 
 		if($this->settings['useGrid'] && 'hidden' !== $type) {
 			$gridSize = array_shift($this->gridControl['cols']);
