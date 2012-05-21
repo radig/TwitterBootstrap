@@ -268,22 +268,24 @@ class BootstrapFormHelper extends FormHelper {
 		$div = $this->_extractOption('div', $options);
 		$options['div'] = false;
 
-		if($isRequired) {
-			if(!isset($div['class']))
-				$div['class'] = '';
-
-			$div['class'] .= ' required';
+		if (is_array($div) && !isset($div['class']))
+			$div['class'] = '';
+		elseif (is_string($div) || empty($div)) {
+			$clss = $div;
+			$div = array('class' => $clss);
+			unset($clss);
 		}
+
+		if($isRequired)
+			$div['class'] .= ' required';
 
 		if($this->settings['useGrid'] && 'hidden' !== $type) {
 			$gridSize = array_shift($this->gridControl['cols']);
 
-			if(!isset($div['class']))
-				$div['class'] = '';
-
 			$div['class'] .= ' span' . $gridSize;
-			$div['class'] = trim($div['class']);
 		}
+
+		$div['class'] = trim($div['class']);
 
 		$before = $this->_extractOption('before', $options);
 		$options['before'] = null;
