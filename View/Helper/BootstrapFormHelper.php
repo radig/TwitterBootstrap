@@ -257,7 +257,6 @@ class BootstrapFormHelper extends FormHelper {
 
 		if (is_null($type) && empty($this->_Opts[$fieldName]['type'])) {
 			$type = $options['type'];
-			unset($options['type']);
 		}
 
 		$disabled = $this->_extractOption('disabled', $options, false);
@@ -349,10 +348,10 @@ class BootstrapFormHelper extends FormHelper {
 
 			if (isset($type)) {
 				$map = array(
-					'string' => 'text', 'datetime' => 'datetime',
-					'boolean' => 'checkbox', 'timestamp' => 'datetime',
+					'string' => 'text', 'datetime' => 'text',
+					'boolean' => 'checkbox', 'timestamp' => 'text',
 					'text' => 'textarea', 'time' => 'time',
-					'date' => 'date', 'float' => 'text',
+					'date' => 'text', 'float' => 'text',
 					'decimal' => 'text', 'integer' => 'number'
 				);
 
@@ -363,6 +362,10 @@ class BootstrapFormHelper extends FormHelper {
 				}
 				if ($fieldKey == $primaryKey) {
 					$options['type'] = 'hidden';
+				}
+
+				if (in_array($type, array('datetime', 'date', 'timestamp'))) {
+					$options['class'] = 'datepicker';
 				}
 			}
 			if (preg_match('/_id$/', $fieldKey) && $options['type'] !== 'hidden') {
