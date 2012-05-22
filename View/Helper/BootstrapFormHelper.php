@@ -53,6 +53,9 @@ class BootstrapFormHelper extends FormHelper {
 
 	public function useGrid($yes = true) {
 		$this->settings['useGrid'] = $yes;
+
+		if(empty($this->gridControl['cols']))
+			$this->gridControl['cols'] = $this->settings['cols'];
 	}
 
 	public function setDefaultGrid($cols) {
