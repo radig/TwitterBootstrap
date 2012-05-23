@@ -307,7 +307,11 @@ class BootstrapFormHelper extends FormHelper {
 			}
 			$text = $label['text'];
 			unset($label['text']);
+
 			$label = $this->label($fieldName, $text, $label);
+			if ('checkbox' == $type) {
+				$label = '';
+			}
 		}
 		$options['label'] = false;
 
