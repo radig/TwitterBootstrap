@@ -268,13 +268,19 @@ class BootstrapFormHelper extends FormHelper {
 		$div = $this->_extractOption('div', $options);
 		$options['div'] = false;
 
-		if (is_array($div) && !isset($div['class']))
-			$div['class'] = '';
-		elseif (is_string($div) || empty($div)) {
-			$clss = $div;
+		if (is_string($div) || empty($div)) {
+			$clss = self::CLASS_GROUP;
+
+			if (strpos($div, self::CLASS_GROUP) !== false)
+				$clss = '';
+
+			$clss .= ' ' . $div;
+
 			$div = array('class' => $clss);
 			unset($clss);
 		}
+		elseif (is_array($div) && !isset($div['class']))
+			$div['class'] = self::CLASS_GROUP;
 
 		if($isRequired)
 			$div['class'] .= ' required';
