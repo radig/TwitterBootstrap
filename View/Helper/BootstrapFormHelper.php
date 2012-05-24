@@ -319,7 +319,8 @@ class BootstrapFormHelper extends FormHelper {
 		$options['between'] = null;
 
 		if( ($type == 'text' || $type == 'textarea' || $type == 'select') && 
-			!preg_match('/span/', isset($options['class'])?$options['class']:'') ) {
+			!preg_match('/span/', isset($options['class'])?$options['class']:'') &&
+			$this->settings['useGrid'] ) {
 			$options = $this->addClass($options, 'span12');
 		}
 
