@@ -318,6 +318,11 @@ class BootstrapFormHelper extends FormHelper {
 		$between = $this->_extractOption('between', $options);
 		$options['between'] = null;
 
+		if( ($type == 'text' || $type == 'textarea' || $type == 'select') && 
+			!preg_match('/span/', isset($options['class'])?$options['class']:'') ) {
+			$options = $this->addClass($options, 'span12');
+		}
+
 		$input = parent::input($fieldName, $options);
 		$divControls = $this->_extractOption('divControls', $options, self::CLASS_INPUTS);
 		$input = $hidden . ((false === $div) ? $input : $this->Html->div($divControls, $input));
