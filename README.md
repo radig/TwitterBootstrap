@@ -173,6 +173,24 @@ Breadcrumb
 		'three',
 	)); ?>
 
+Forms in a Grid System
+
+BootstrapForm helper now include too a automagic grid system, where all you need is
+specify configurations for the next line and only write code to print your
+inputs.
+
+	// Enable default grid (four elements with span3 sizes)
+	<?php $this->useGrid(); ?>
+
+	// Enable and define grid for the next line (first col with span2, second with span4...)
+	<?php $this->defineRow(array(2, 4, 5, 1)); ?>
+
+	// Disable grid system
+	<?php $this->useGrid(false); ?>
+
+	// Restor defaults (also disable grid system)
+	<?php $this->restoreDefaults(); ?>
+
 You can see more sample. access http://{webroot}/twitter_bootstrap
 
 ##License

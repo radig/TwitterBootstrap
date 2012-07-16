@@ -32,7 +32,7 @@ class BootstrapFormHelper extends FormHelper {
 
 	protected $gridControl = array(
 		'first' => true,
-		'cols' => null
+		'cols' => false
 	);
 
 	protected $_Opts = array();
@@ -48,10 +48,16 @@ class BootstrapFormHelper extends FormHelper {
 	}
 
 	public function restoreDefaults() {
+		$this->_finishUnclosedRow();
 		$this->settings = $this->defaultSettings;
+		$this->gridControl['cols'] = $this->settings['cols'];
 	}
 
 	public function useGrid($yes = true) {
+		if($yes === false) {
+			$this->_finishUnclosedRow();
+		}
+
 		$this->settings['useGrid'] = $yes;
 
 		if(empty($this->gridControl['cols']))
@@ -59,11 +65,13 @@ class BootstrapFormHelper extends FormHelper {
 	}
 
 	public function setDefaultGrid($cols) {
+		$this->_finishUnclosedRow();
 		$this->useGrid();
 		$this->settings['cols'] = $cols;
 	}
 
 	public function defineRow($cols) {
+		$this->_finishUnclosedRow();
 		$this->useGrid();
 		$this->gridControl['cols'] = $cols;
 	}
@@ -514,5 +522,11 @@ class BootstrapFormHelper extends FormHelper {
 		);
 
 		return $this->Html->endRow();
+	}
+
+	protected function _finishUnclosedRow() {
+		if($this->settings['useGrid'] === true && current($this->gridControl['cols']) === false) {
+			echo $this->_endRow();
+		}
 	}
 }
