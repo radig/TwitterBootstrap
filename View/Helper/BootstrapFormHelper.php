@@ -236,6 +236,8 @@ class BootstrapFormHelper extends FormHelper {
 	}
 
 	public function input($fieldName, $options = array()) {
+		$this->setEntity($fieldName);
+
 		$options = array_merge(
 			array('format' => array('before', 'label', 'between', 'input', 'error', 'after')),
 			$this->_inputDefaults,
@@ -248,7 +250,7 @@ class BootstrapFormHelper extends FormHelper {
 		$isRequired = $this->_introspectModel($this->model(), 'validates', $this->field());
 
 		$hidden = null;
-		if ('hidden' === $type) {
+		if ('hidden' === $type || $options['type'] === 'hidden') {
 			$options['div'] = false;
 			$options['label'] = false;
 		} else {
