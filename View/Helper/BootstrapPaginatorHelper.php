@@ -155,7 +155,7 @@ class BootstrapPaginatorHelper extends PaginatorHelper {
 		return implode("\n", $out);
 	}
 
-	public function first($title, $options = array()) {
+	public function first($first = '<< first', $options = array()) {
 		$default = array(
 			'title' => '<<',
 			'tag' => 'li',
