@@ -178,7 +178,7 @@ class BootstrapPaginatorHelper extends PaginatorHelper {
 		);
 	}
 
-	public function last($title, $options = array()) {
+	public function last($title = 'last >>', $options = array()) {
 		$default = array(
 			'title' => '>>',
 			'tag' => 'li',
