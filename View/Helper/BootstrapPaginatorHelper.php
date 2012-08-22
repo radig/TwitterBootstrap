@@ -62,7 +62,7 @@ class BootstrapPaginatorHelper extends PaginatorHelper {
 		return $this->Html->tag('ul', implode("\n", $out), compact('class'));
 	}
 
-	public function prev($title, $options = array()) {
+	public function prev($title = '<< Previous', $options = array(), $disabledTitle = array(), $disabledOptions = array()) {
 		$default = array(
 			'title' => '<',
 			'tag' => 'li',
