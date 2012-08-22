@@ -89,7 +89,7 @@ class BootstrapPaginatorHelper extends PaginatorHelper {
 		)));
 	}
 
-	public function next($title, $options = array()) {
+	public function next($title = 'Next >>', $options = array(), $disabledTitle = array(), $disabledOptions = array()) {
 		$default = array(
 			'title' => '>',
 			'tag' => 'li',
