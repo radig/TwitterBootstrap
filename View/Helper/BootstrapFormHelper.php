@@ -77,7 +77,7 @@ class BootstrapFormHelper extends FormHelper {
 		$this->gridControl['cols'] = $cols;
 	}
 
-	public function textarea($fieldName, $options, $before = false) {
+	public function textarea($fieldName, $options = array(), $before = false) {
 		if ($before) {
 			if ('textarea' === $options['type']) {
 				$options += array('cols' => false, 'rows' => '3');
