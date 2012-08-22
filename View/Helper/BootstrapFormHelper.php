@@ -142,7 +142,7 @@ class BootstrapFormHelper extends FormHelper {
 		}
 	}
 
-	public function checkbox($fieldName, $options, $before = false) {
+	public function checkbox($fieldName, $options = array(), $before = false) {
 		if ($before) {
 			if ('checkbox' === $options['type']) {
 				if ($this->_extractOption('div', $options)) {
