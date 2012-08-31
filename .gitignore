@@ -1,1 +1,6 @@
 webroot/*
+
+# OS generated files #
+######################
+*.sublime-project
+*.sublime-workspace
