@@ -449,14 +449,28 @@ class BootstrapFormHelper extends FormHelper {
 		}
 		if ($this->error($fieldName)) {
 			$error = $this->_extractOption('error', $options, array());
-			$options['error'] = array_merge($error, array(
-				'attributes' => array(
-					'wrap' => 'span',
-					'class' => 'help-inline error-message',
-				),
-			));
-			if (false !== $div) {
-				$options = $this->addClass($options, self::CLASS_ERROR, 'div');
+
+			if (!$error) {
+				$options['error'] = false;
+			} else if (is_array($error)) {
+
+				if (array_key_exists('attributes', $error)) {
+					if (array_key_exists('wrap', $error['attributes']) && array_key_exists('class', $error['attributes'])) {
+						$options['error'] = $error;
+					}
+				} else {
+					$options['error'] = array_merge($error, array(
+						'attributes' => array(
+							'wrap' => 'span',
+							'class' => 'help-inline error-message',
+						),
+					));
+				}
+
+				if (false !== $div) {
+					$options = $this->addClass($options, self::CLASS_ERROR, 'div');
+				}
+				
 			}
 		}
 		return $options;
