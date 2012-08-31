@@ -77,7 +77,7 @@ class BootstrapFormHelper extends FormHelper {
 		$this->gridControl['cols'] = $cols;
 	}
 
-	public function textarea($fieldName, $options, $before = false) {
+	public function textarea($fieldName, $options = array(), $before = false) {
 		if ($before) {
 			if ('textarea' === $options['type']) {
 				$options += array('cols' => false, 'rows' => '3');
@@ -142,7 +142,7 @@ class BootstrapFormHelper extends FormHelper {
 		}
 	}
 
-	public function checkbox($fieldName, $options, $before = false) {
+	public function checkbox($fieldName, $options = array(), $before = false) {
 		if ($before) {
 			if ('checkbox' === $options['type']) {
 				if ($this->_extractOption('div', $options)) {
@@ -170,10 +170,10 @@ class BootstrapFormHelper extends FormHelper {
 		}
 	}
 
-	public function radio($fieldName, $radioOptions, $options) {
-		$options['legend'] = false;
-		$options['separator'] = "\n";
-		$out = parent::radio($fieldName, $radioOptions, $options);
+	public function radio($fieldName, $options = array(), $attributes = array()) {
+		$attributes['legend'] = false;
+		$attributes['separator'] = "\n";
+		$out = parent::radio($fieldName, $options, $attributes);
 		$out = $this->_restructureLabel($out, array('class' => 'radio'));
 		return $out;
 	}

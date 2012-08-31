@@ -62,7 +62,7 @@ class BootstrapPaginatorHelper extends PaginatorHelper {
 		return $this->Html->tag('ul', implode("\n", $out), compact('class'));
 	}
 
-	public function prev($title, $options = array()) {
+	public function prev($title = '<< Previous', $options = array(), $disabledTitle = array(), $disabledOptions = array()) {
 		$default = array(
 			'title' => '<',
 			'tag' => 'li',
@@ -89,7 +89,7 @@ class BootstrapPaginatorHelper extends PaginatorHelper {
 		)));
 	}
 
-	public function next($title, $options = array()) {
+	public function next($title = 'Next >>', $options = array(), $disabledTitle = array(), $disabledOptions = array()) {
 		$default = array(
 			'title' => '>',
 			'tag' => 'li',
@@ -155,7 +155,7 @@ class BootstrapPaginatorHelper extends PaginatorHelper {
 		return implode("\n", $out);
 	}
 
-	public function first($title, $options = array()) {
+	public function first($first = '<< first', $options = array()) {
 		$default = array(
 			'title' => '<<',
 			'tag' => 'li',
@@ -178,7 +178,7 @@ class BootstrapPaginatorHelper extends PaginatorHelper {
 		);
 	}
 
-	public function last($title, $options = array()) {
+	public function last($title = 'last >>', $options = array()) {
 		$default = array(
 			'title' => '>>',
 			'tag' => 'li',
