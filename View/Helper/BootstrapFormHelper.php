@@ -279,7 +279,7 @@ class BootstrapFormHelper extends FormHelper {
 		$div = $this->_extractOption('div', $options);
 		$options['div'] = false;
 
-		if (is_string($div) || empty($div)) {
+		if (is_string($div) || (empty($div) && false !== $div)) {
 			$clss = self::CLASS_GROUP;
 
 			if (strpos($div, self::CLASS_GROUP) !== false)
@@ -305,7 +305,8 @@ class BootstrapFormHelper extends FormHelper {
 			$div['class'] .= ' span' . $gridSize;
 		}
 
-		$div['class'] = trim($div['class']);
+		if(isset($div['class']))
+			$div['class'] = trim($div['class']);
 
 		$before = $this->_extractOption('before', $options);
 		$options['before'] = null;
@@ -340,7 +341,7 @@ class BootstrapFormHelper extends FormHelper {
 
 		$input = parent::input($fieldName, $options);
 		$divControls = $this->_extractOption('divControls', $options, self::CLASS_INPUTS);
-		$input = $hidden . ((false === $div) ? $input : $this->Html->div($divControls, $input));
+		$input = $hidden . ((false === $div || 'hidden' === $type) ? $input : $this->Html->div($divControls, $input));
 
 		$out = $before . $label . $between . $input;
 		$out = (false === $div) ? $out : $this->Html->div($div, $out);
