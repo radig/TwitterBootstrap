@@ -296,6 +296,9 @@ class BootstrapFormHelper extends FormHelper {
 		if($isRequired)
 			$div['class'] .= ' required';
 
+		if($this->error($fieldName))
+			$div['class'] .= ' error';
+
 		if($this->settings['useGrid'] && 'hidden' !== $type) {
 			$gridSize = array_shift($this->gridControl['cols']);
 
@@ -447,15 +450,18 @@ class BootstrapFormHelper extends FormHelper {
 				$options['helpInline'] = $inlines;
 			}
 		}
+
 		if ($this->error($fieldName)) {
-			$error = $this->_extractOption('error', $options, array());
+			$error = $this->_extractOption('error', $options, null);
 
 			if (!$error) {
-				$options['error'] = false;
+				$options['error'] = array('attributes' => array(
+					'wrap' => 'span',
+					'class' => 'help-inline error-message',
+				));
 			} else if (is_array($error)) {
-
-				if (array_key_exists('attributes', $error)) {
-					if (array_key_exists('wrap', $error['attributes']) && array_key_exists('class', $error['attributes'])) {
+				if (isset($error['attributes'])) {
+					if (isset($error['attributes']['wrap']) && isset($error['attributes']['class'])) {
 						$options['error'] = $error;
 					}
 				} else {
@@ -470,7 +476,6 @@ class BootstrapFormHelper extends FormHelper {
 				if (false !== $div) {
 					$options = $this->addClass($options, self::CLASS_ERROR, 'div');
 				}
-				
 			}
 		}
 		return $options;
