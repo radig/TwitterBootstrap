@@ -279,7 +279,7 @@ class BootstrapFormHelper extends FormHelper {
 		$div = $this->_extractOption('div', $options);
 		$options['div'] = false;
 
-		if (is_string($div) || empty($div)) {
+		if (is_string($div) || (empty($div) && false !== $div)) {
 			$clss = self::CLASS_GROUP;
 
 			if (strpos($div, self::CLASS_GROUP) !== false)
@@ -296,13 +296,17 @@ class BootstrapFormHelper extends FormHelper {
 		if($isRequired)
 			$div['class'] .= ' required';
 
+		if($this->error($fieldName))
+			$div['class'] .= ' error';
+
 		if($this->settings['useGrid'] && 'hidden' !== $type) {
 			$gridSize = array_shift($this->gridControl['cols']);
 
 			$div['class'] .= ' span' . $gridSize;
 		}
 
-		$div['class'] = trim($div['class']);
+		if(isset($div['class']))
+			$div['class'] = trim($div['class']);
 
 		$before = $this->_extractOption('before', $options);
 		$options['before'] = null;
@@ -337,7 +341,7 @@ class BootstrapFormHelper extends FormHelper {
 
 		$input = parent::input($fieldName, $options);
 		$divControls = $this->_extractOption('divControls', $options, self::CLASS_INPUTS);
-		$input = $hidden . ((false === $div) ? $input : $this->Html->div($divControls, $input));
+		$input = $hidden . ((false === $div || 'hidden' === $type) ? $input : $this->Html->div($divControls, $input));
 
 		$out = $before . $label . $between . $input;
 		$out = (false === $div) ? $out : $this->Html->div($div, $out);
@@ -447,15 +451,18 @@ class BootstrapFormHelper extends FormHelper {
 				$options['helpInline'] = $inlines;
 			}
 		}
+
 		if ($this->error($fieldName)) {
-			$error = $this->_extractOption('error', $options, array());
+			$error = $this->_extractOption('error', $options, null);
 
 			if (!$error) {
-				$options['error'] = false;
+				$options['error'] = array('attributes' => array(
+					'wrap' => 'span',
+					'class' => 'help-inline error-message',
+				));
 			} else if (is_array($error)) {
-
-				if (array_key_exists('attributes', $error)) {
-					if (array_key_exists('wrap', $error['attributes']) && array_key_exists('class', $error['attributes'])) {
+				if (isset($error['attributes'])) {
+					if (isset($error['attributes']['wrap']) && isset($error['attributes']['class'])) {
 						$options['error'] = $error;
 					}
 				} else {
@@ -470,7 +477,6 @@ class BootstrapFormHelper extends FormHelper {
 				if (false !== $div) {
 					$options = $this->addClass($options, self::CLASS_ERROR, 'div');
 				}
-				
 			}
 		}
 		return $options;
