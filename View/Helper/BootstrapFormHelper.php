@@ -24,6 +24,8 @@ class BootstrapFormHelper extends FormHelper {
 
 	public $settings = array();
 
+	protected $_isHorizontal = false;
+
 	protected $defaultSettings = array(
 		'useGrid' => false,
 		'cols' => array('3', '3', '3', '3'), // 4 columns with 3 span width
@@ -88,7 +90,7 @@ class BootstrapFormHelper extends FormHelper {
 		}
 	}
 
-	public function uneditable($fieldName, $options, $before = false) {
+	public function uneditable($fieldName, $options = array(), $before = false) {
 		if ($before) {
 			$class = explode(' ', $this->_extractOption('class', $options));
 			if (in_array('uneditable-input', $class)) {
@@ -101,7 +103,7 @@ class BootstrapFormHelper extends FormHelper {
 		}
 	}
 
-	public function addon($fieldName, $options, $before = false) {
+	public function addon($fieldName, $options = array(), $before = false) {
 		if ($before) {
 			$prepend = $this->_extractOption('prepend', $options);
 			$append = $this->_extractOption('append', $options);
@@ -156,24 +158,39 @@ class BootstrapFormHelper extends FormHelper {
 				$label = array('text' => $label);
 			}
 			$after = $this->_extractOption('after', $this->_Opts[$fieldName]);
-
-			if ($this->_extractOption('div', $this->_Opts[$fieldName])) {
-				$label['text'] = $after;
-				$label['class'] = null;
-			}
-
-			$label = $this->addClass($label, 'checkbox');
-			$text = $label['text'];
-			unset($label['text']);
-			$out = parent::checkbox($fieldName, $options) . $text;
-			return $this->label($fieldName, $out, $label);
 		}
+
+		if ($this->_isHorizontal) {
+			$label['text'] = $after;
+			$label['class'] = null;
+		}
+
+		$label = $this->addClass($label, 'checkbox');
+		$text = $label['text'];
+		unset($label['text']);
+		$out = parent::checkbox($fieldName, $options) . $text;
+		return $this->label($fieldName, $out, $label);
+	}
+
+	protected function _setOptions($fieldName, $options) {
+		if ('textarea' === $options['type']) {
+			$options += array('cols' => false, 'rows' => '3');
+		}
+		if ('checkbox' === $options['type']) {
+			if ($this->_isHorizontal) {
+				$options['after'] = null;
+			} else {
+				$options['label'] = false;
+			}
+		}
+		return $options;
 	}
 
 	public function radio($fieldName, $options = array(), $attributes = array()) {
 		$attributes['legend'] = false;
 		$attributes['separator'] = "\n";
 		$out = parent::radio($fieldName, $options, $attributes);
+
 		$out = $this->_restructureLabel($out, array('class' => 'radio'));
 		return $out;
 	}
@@ -192,7 +209,7 @@ class BootstrapFormHelper extends FormHelper {
 	protected function _restructureLabel($out, $options = array()) {
 		$out = explode("\n", $out);
 		foreach ($out as $key => &$_out) {
-			$input = strip_tags($_out, '<input>');
+			$input = strip_tags($_out, '<input><img>');
 			if ($input) {
 				$_out = $this->Html->tag('label', $input, $options);
 			}
@@ -204,12 +221,14 @@ class BootstrapFormHelper extends FormHelper {
 		$class = explode(' ', $this->_extractOption('class', $options));
 		$inputDefaults = $this->_extractOption('inputDefaults', $options, array());
 
+		if (in_array(self::FORM_HORIZONTAL, $class)) {
+			$this->_isHorizontal = true;
+		}
+
 		if (in_array(self::FORM_SEARCH, $class) || in_array(self::FORM_INLINE, $class)) {
 			$options['inputDefaults'] = Set::merge($inputDefaults, array('div' => false, 'label' => false));
-		} elseif (in_array(self::FORM_HORIZONTAL, $class)) {
-			$options['inputDefaults'] = Set::merge($inputDefaults, array('div' => self::CLASS_GROUP));
 		} else {
-			$options['inputDefaults'] = Set::merge($inputDefaults, array('div' => null));
+			$options['inputDefaults'] = Set::merge($inputDefaults, array('div' => self::CLASS_GROUP));
 		}
 
 		return parent::create($model, $options);
@@ -223,7 +242,7 @@ class BootstrapFormHelper extends FormHelper {
 			'icon' => null,
 		);
 		$options = array_merge($default, $this->_inputDefaults, $options);
-		if (self::CLASS_GROUP === $options['div']) {
+		if ($options['div'] !== false && $this->_isHorizontal) {
 			$options['div'] = self::CLASS_ACTION;
 		}
 		if ($options['icon']) {
@@ -256,8 +275,7 @@ class BootstrapFormHelper extends FormHelper {
 		} else {
 			$options = $this->uneditable($fieldName, $options, true);
 			$options = $this->addon($fieldName, $options, true);
-			$options = $this->textarea($fieldName, $options, true);
-			$options = $this->checkbox($fieldName, $options, true);
+			$options = $this->_setOptions($fieldName, $options);
 			$options = $this->_controlGroupStates($fieldName, $options);
 			$options = $this->_buildAfter($options);
 
@@ -521,7 +539,7 @@ class BootstrapFormHelper extends FormHelper {
 		return $out;
 	}
 
-	public function help($text, $options) {
+	public function help($text, $options = array()) {
 		$classMap = array(
 			'inline' => array('wrap' => 'span', 'class' => 'help-inline'),
 			'block' => array('wrap' => 'p', 'class' => 'help-block'),
