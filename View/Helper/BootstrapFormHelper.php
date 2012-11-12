@@ -312,15 +312,15 @@ class BootstrapFormHelper extends FormHelper {
 			$div['class'] = self::CLASS_GROUP;
 
 		if($isRequired)
-			$div['class'] .= ' required';
+			$this->addClass($div, 'required');
 
 		if($this->error($fieldName))
-			$div['class'] .= ' error';
+			$this->addClass($div, 'error');
 
 		if($this->settings['useGrid'] && 'hidden' !== $type) {
 			$gridSize = array_shift($this->gridControl['cols']);
 
-			$div['class'] .= ' span' . $gridSize;
+			$this->addClass($div, "span{$gridSize}");
 		}
 
 		if(isset($div['class']))
