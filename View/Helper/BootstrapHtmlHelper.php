@@ -6,7 +6,7 @@ class BootstrapHtmlHelper extends HtmlHelper {
 
 	const ICON_PREFIX = 'icon-';
 
-	const GLYPH_PREFIX = 'glyph-';
+	const FONTICON_PREFIX = 'font-';
 
 	public function __construct(View $View, $settings = array()) {
 		parent::__construct($View, $settings);
@@ -32,16 +32,20 @@ class BootstrapHtmlHelper extends HtmlHelper {
 	}
 
 	public function glyphLink($title, $url = null, $options = array(), $confirmMessage = false) {
-		$options['glyph'] = true;
+		return $this->fontIconLink($title, $url, $options, $confirmMessage);
+	}
+
+	public function fontIconLink($title, $url = null, $options = array(), $confirmMessage = false) {
+		$options['fonticon'] = true;
 
 		return $this->link($title, $url, $options, $confirmMessage);
 	}
 
-	public function icon($class, $useGlyph = false) {
+	public function icon($class, $useFontIcon = false) {
 		$class = explode(' ', $class);
 		foreach ($class as &$_class) {
 			if ($_class) {
-				$_class = ($useGlyph ? self::GLYPH_PREFIX : self::ICON_PREFIX) . $_class;
+				$_class = ($useFontIcon ? self::FONTICON_PREFIX : self::ICON_PREFIX) . $_class;
 			} else {
 				unset($_class);
 			}
@@ -50,16 +54,22 @@ class BootstrapHtmlHelper extends HtmlHelper {
 	}
 
 	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
-		$default = array('icon' => null, 'escape' => true, 'glyph' => false);
+		$default = array('icon' => null, 'escape' => true, 'fonticon' => false);
 		$options = array_merge($default, (array)$options);
+
+		// just for BC
+		if(isset($options['glyph']) && $options['glyph'] && !$options['fonticon']) {
+			$options['fonticon'] = true;
+			unset($options['glyph']);
+		}
 
 		if ($options['icon']) {
 			if ($options['escape']) {
 				$title = h($title);
 			}
-			$title = $this->icon($options['icon'], $options['glyph']) . ' ' . $title;
+			$title = $this->icon($options['icon'], $options['fonticon']) . $title;
 			$options['escape'] = false;
-			unset($options['icon'], $options['glyph']);
+			unset($options['icon'], $options['fonticon']);
 		}
 
 		return parent::link($title, $url, $options, $confirmMessage);
