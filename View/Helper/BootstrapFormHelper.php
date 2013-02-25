@@ -361,7 +361,7 @@ class BootstrapFormHelper extends FormHelper {
 		$input = $hidden . ((false === $div || 'hidden' === $type) ? $input : $this->Html->div($divControls, $input));
 
 		$out = $before . $label . $between . $input;
-		$out = (false === $div) ? $out : $this->Html->div($div, $out);
+		$out = (false === $div || 'hidden' === $type) ? $out : $this->Html->div($div, $out);
 
 		if($this->settings['useGrid'] && 'hidden' !== $type) {
 			if($this->gridControl['first']) {
