@@ -17,14 +17,8 @@ class BootstrapHtmlHelper extends HtmlHelper {
 		}
 	}
 
-	public function beginRow($fluid = true) {
-		$clss = 'row';
-
-		if($fluid) {
-			$clss .= '-fluid';
-		}
-
-		return "\n" . '<div class="'.$clss.'">';
+	public function beginRow() {
+		return "\n" . '<div class="row">';
 	}
 
 	public function endRow() {

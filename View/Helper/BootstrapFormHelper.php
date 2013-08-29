@@ -10,7 +10,7 @@ class BootstrapFormHelper extends FormHelper {
 
 	const FORM_HORIZONTAL = 'form-horizontal';
 
-	const CLASS_GROUP = 'control-group';
+	const CLASS_GROUP = 'form-group';
 
 	const CLASS_INPUTS = 'controls';
 
@@ -29,7 +29,6 @@ class BootstrapFormHelper extends FormHelper {
 	protected $defaultSettings = array(
 		'useGrid' => false,
 		'cols' => array('3', '3', '3', '3'), // 4 columns with 3 span width
-		'fluid' => true
 	);
 
 	protected $gridControl = array(
@@ -319,7 +318,7 @@ class BootstrapFormHelper extends FormHelper {
 
 		if($this->settings['useGrid'] && 'hidden' !== $type) {
 			$gridSize = array_shift($this->gridControl['cols']);
-			$div = $this->addClass($div, "span{$gridSize}");
+			$div = $this->addClass($div, "col-md-{$gridSize}");
 		}
 
 		if(isset($div['class']))
@@ -351,9 +350,9 @@ class BootstrapFormHelper extends FormHelper {
 		$options['between'] = null;
 
 		if( ($type == 'text' || $type == 'textarea' || $type == 'select' || $type == 'number') &&
-			!preg_match('/span/', isset($options['class'])?$options['class']:'') &&
+			!preg_match('/col-md-/', isset($options['class'])?$options['class']:'') &&
 			$this->settings['useGrid'] ) {
-			$options = $this->addClass($options, 'span12');
+			$options = $this->addClass($options, 'form-control');
 		}
 
 		$input = parent::input($fieldName, $options);
@@ -551,8 +550,8 @@ class BootstrapFormHelper extends FormHelper {
 		return $this->Html->tag($wrap , $text, $options);
 	}
 
-	protected function _beginRow($fluid = true) {
-		return $this->Html->beginRow($fluid);
+	protected function _beginRow() {
+		return $this->Html->beginRow();
 	}
 
 	protected function _endRow() {
