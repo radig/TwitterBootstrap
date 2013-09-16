@@ -70,9 +70,9 @@ class BootstrapHtmlHelper extends HtmlHelper {
 
 			$title = $this->icon($options['icon'], $options['fonticon']) . ' ' . $title;
 			$options['escapeTitle'] = false;
-			unset($options['icon'], $options['fonticon']);
 		}
 
+		unset($options['icon'], $options['fonticon']);
 		return parent::link($title, $url, $options, $confirmMessage);
 	}
 
