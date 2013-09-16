@@ -6,7 +6,7 @@ class BootstrapHtmlHelper extends HtmlHelper {
 
 	const ICON_PREFIX = 'icon-';
 
-	const FONTICON_PREFIX = 'font-';
+	const FONTICON_PREFIX = 'fa-icon-';
 
 	public function __construct(View $View, $settings = array()) {
 		parent::__construct($View, $settings);
@@ -67,7 +67,8 @@ class BootstrapHtmlHelper extends HtmlHelper {
 			if ($options['escape']) {
 				$title = h($title);
 			}
-			$title = $this->icon($options['icon'], $options['fonticon']) . $title;
+
+			$title = $this->icon($options['icon'], $options['fonticon']) . ' ' . $title;
 			$options['escapeTitle'] = false;
 			unset($options['icon'], $options['fonticon']);
 		}
