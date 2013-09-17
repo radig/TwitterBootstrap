@@ -54,12 +54,12 @@ class BootstrapHtmlHelper extends HtmlHelper {
 	}
 
 	public function link($title, $url = null, $options = array(), $confirmMessage = false) {
-		$default = array('icon' => null, 'escape' => true, 'fonticon' => false);
+		$default = array('icon' => null, 'escape' => true, 'fonticon' => true);
 		$options = array_merge($default, (array)$options);
 
 		// just for BC
-		if(isset($options['glyph']) && $options['glyph'] && !$options['fonticon']) {
-			$options['fonticon'] = true;
+		if(isset($options['glyph']) && $options['glyph'] === false || !$options['fonticon']) {
+			$options['fonticon'] = false;
 			unset($options['glyph']);
 		}
 
